@@ -1,12 +1,24 @@
-import { update as updateSnake, draw as drawSnake, SNAKE_SPEED } from "./snake.js";
+import { update as updateSnake, draw as drawSnake, SNAKE_SPEED, getSnakeHead, SnakeIntersection } from "./snake.js";
+import { update as updateFood, draw as drawFood } from "./food.js";
+import { outSideGrid } from "./grid.js";
+
 
 // Here we are storing value i.e. render time into the variable lastRenderTime
 let lastRenderTime = 0
 
 const gameBoard = document.getElementById('game-board');
 
+let gameOver = false;
 
 function main(currentTime) {
+	// If my snake has dead so we implement gameOver function and we have given alery you lose and after this we want nothing to be happened so we have return the alert so after this nothing of this function or code will run
+	if(gameOver) {
+		if(confirm('you lost. press ok to restart')) {
+			// if user clicks on okay then a true value will be return 
+			window.location='/'; // This will take to the intial page i.e. home page  
+		}
+		return 
+	}
 	// window.requestAnimationFrame(main); // I have wrote this line here as i want run this function over and over again
 	
 	/* Here i want to know that how many seconds it has time has been passed since last render so i am storing the seconds passed into some variable*/
@@ -31,11 +43,19 @@ function main(currentTime) {
 window.requestAnimationFrame(main)
 
 function update() {
-	updateSnake()
+	updateSnake();
+	updateFood();
+	checkDeath();
 }
 
 function draw() {
 	gameBoard.innerHTML = ' ';
-	drawSnake(gameBoard)
+	drawSnake(gameBoard);
+	drawFood(gameBoard);
+}
+
+// Here we write this function as my snake will die due to the both of the condition 
+function checkDeath() {
+	gameOver = outSideGrid(getSnakeHead()) || SnakeIntersection()
 }
  
